@@ -49,7 +49,7 @@ func createALogDirectory()  {
 		if strings.HasSuffix(ExeHomeDir,"/") {
 			ExeHomeDir = ExeHomeDir[0:len(ExeHomeDir) -1]
 		}
-		SkynetPath = ExeHomeDir + "/skynet"
+		SkynetPath = ExeHomeDir + "/skynetRoot"
 		mkdir := dirMkdir(SkynetPath)
 		if mkdir != nil {
 			log.Println("create skynet error",mkdir)
