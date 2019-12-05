@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>万能遁</title>
+</head>
+<style>
+    div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -200px 0 0 -300px;
+        width: 600px;
+        height: 400px;
+        border: 2px solid black;
+    }
+    form {
+        text-align: center;
+    }
+    input {
+        width: 400px;
+        height: 50px;
+        margin-top: 20px;
+        border: 1px solid black;
+        font-size: 18px;
+    }
+    h1{
+        color: black;
+    }
+</style>
+<body>
+<div >
+    {{if ne .msg ""}}
+        <form>
+            <h1>{{.msg}}</h1>
+        </form>
+    {{else}}
+        {{if eq .code 500}}
+            <form>
+                <h1>授权认证</h1>
+                <input placeholder="账号" id="accountNumber" name="accountNumber" />
+                <input placeholder="密码" id="password" name="password" />
+                <input type="button" value="授权" style="background-color: white;font-size: 18px;color: black" onclick="authorize()" />
+            </form>
+        {{else}}
+            {{if ne .msg ""}}
+                <form>
+                    <h1>{{.msg}}</h1>
+                </form>
+            {{else}}
+                <form>
+                    <h1>IP状态
+                        {{if eq .status 0}}
+                            - 未安装
+                        {{else if eq .status 1}}
+                            - 已启动
+                        {{else if eq .status 2}}
+                            - 未启动
+                        {{end}}
+                    </h1>
+                    {{if eq .status 0}}
+                        <input type="button" value="安装到系统服务&开机自启动" style="background-color: white;font-size: 18px;color: black" onclick="install_service()" />
+                    {{else if eq .status 1}}
+                        <input type="button" value="重启服务" style="background-color: white;font-size: 18px;color: black" onclick="restart_service()" />
+                        <input type="button" value="卸载服务" style="background-color: white;font-size: 18px;color: black" onclick="uninstall_service()" />
+                    {{else if eq .status 2}}
+                        <input type="button" value="启动服务" style="background-color: white;font-size: 18px;color: black" onclick="restart_service()" />
+                    {{end}}
+                    <input type="button" value="检查更新-v1.0" style="background-color: white;font-size: 18px;color: black" onclick="checkForUpdates()" />
+                </form>
+            {{end}}
+        {{end}}
+    {{end}}
+</div>
+<script>
+    function authorize() {
+        var accountNumber = document.getElementById("accountNumber").value;
+        var password = document.getElementById("password").value;
+        if (accountNumber == "" || password == ""){
+            alert("账号或密码未填!");
+        }else {
+            var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+            httpRequest.open('GET', '/authorize?accountNumber='+accountNumber+'&password='+password, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+            httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+            /**
+             * 获取数据后的处理程序
+             */
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                    var json = httpRequest.responseText;//获取到json字符串，还需解析
+                    var data = strToJson(json);
+                    alert(data.msg);
+                    if (data.code == 200){
+                        location.reload();
+                    }
+                }
+            };
+        }
+    }
+    function install_service() {
+        var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+        httpRequest.open('GET', '/install_service', true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+        httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+        /**
+         * 获取数据后的处理程序
+         */
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                var json = httpRequest.responseText;//获取到json字符串，还需解析
+                var data = strToJson(json);
+                alert(data.msg);
+                if (data.code == 200){
+                    location.reload();
+                }
+            }
+        };
+    }
+
+    function checkForUpdates() {
+        var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+        httpRequest.open('GET', '/checkForUpdates', true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+        httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+        /**
+         * 获取数据后的处理程序
+         */
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                var json = httpRequest.responseText;//获取到json字符串，还需解析
+                var data = strToJson(json);
+                alert(data.msg);
+                setTimeout('myrefresh()',3000); //指定1秒刷新一次
+            }
+        };
+    }
+
+    function strToJson(str){
+        var json = eval('(' + str + ')');
+        return json;
+    }
+
+    function myrefresh()
+    {
+        window.location.reload();
+    }
+</script>
+</body>
+</html>
