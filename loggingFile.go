@@ -52,13 +52,13 @@ func createALogDirectory()  {
 		SkynetPath = ExeHomeDir + "/skynet"
 		mkdir := dirMkdir(SkynetPath)
 		if mkdir != nil {
-			log.Println(mkdir)
+			log.Println("create skynet error",mkdir)
 			os.Exit(0)
 		}else {
 			LogPath = SkynetPath + "/logs"
 			mkdir := dirMkdir(LogPath)
 			if mkdir != nil {
-				log.Println(mkdir)
+				log.Println("create logs error",mkdir)
 				os.Exit(0)
 			}
 		}
