@@ -68,12 +68,8 @@ func createALogDirectory()  {
 func dirMkdir(path string) error {
 	_, e := os.Stat(path)
 	if e != nil {
-		if os.IsNotExist(e) {
-			e := os.MkdirAll(path, os.ModePerm)
-			if e != nil {
-				return e
-			}
-		}else {
+		e := os.MkdirAll(path, os.ModePerm)
+		if e != nil {
 			return e
 		}
 	}
